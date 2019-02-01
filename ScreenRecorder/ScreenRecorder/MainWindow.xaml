@@ -16,18 +16,44 @@
         Icon="./Resources/favicon.ico">
 
     <Window.Resources>
-
+        <sys:Int32 x:Key="startX">0</sys:Int32>
+        <sys:Int32 x:Key="startY">0</sys:Int32>
     </Window.Resources>
 
     <TabControl Margin="2">
         <TabItem Header="Video" Width="100">
             <Canvas Width="780" Height="385">
                 <TextBox Name="RecordingLocation" Height="23" Canvas.Left="116" TextWrapping="NoWrap" Canvas.Top="8" Width="300" IsEnabled="False" VerticalContentAlignment="Center"/>
-                <TextBox Name="TemporaryLocation" Height="23" Canvas.Left="116" TextWrapping="NoWrap" Canvas.Top="36" Width="300" IsEnabled="False" VerticalContentAlignment="Center"/>
                 <Button Content="Select Folder" Canvas.Left="421" Canvas.Top="8" Width="90" Height="23" Click="BtnRecordingLocation_Click"/>
-                <Button Content="Select Folder" Canvas.Left="421" Canvas.Top="36" Width="90" Height="23" Click="BtnTemporaryLocation_Click"/>
                 <Label Content="Recording Location" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" />
-                <Label Content="Temporary Location" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                <Label Content="Select Monitor" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                <Label Content="Frame Rate" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                <Label Content="Quality (%)" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                <ComboBox Name="MonitorSelection" Canvas.Left="116" Canvas.Top="36" Width="300" SelectionChanged="MonitorSelection_DataChanged"/>
+                <ComboBox Name="FrameRateSelection" Canvas.Left="116" Canvas.Top="64" Width="100" SelectionChanged="FrameRateSelection_DataChanged">
+                    <ComboBoxItem>10</ComboBoxItem>
+                    <ComboBoxItem>20</ComboBoxItem>
+                    <ComboBoxItem>30</ComboBoxItem>
+                    <ComboBoxItem>45</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">60</ComboBoxItem>
+                    <ComboBoxItem>80</ComboBoxItem>
+                    <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>144</ComboBoxItem>
+                </ComboBox>
+                <ComboBox Name="QualitySelection" Canvas.Left="116" Canvas.Top="92" Width="100" SelectionChanged="QualitySelection_DataChanged">
+                    <ComboBoxItem>10</ComboBoxItem>
+                    <ComboBoxItem>20</ComboBoxItem>
+                    <ComboBoxItem>30</ComboBoxItem>
+                    <ComboBoxItem>40</ComboBoxItem>
+                    <ComboBoxItem>50</ComboBoxItem>
+                    <ComboBoxItem>60</ComboBoxItem>
+                    <ComboBoxItem>70</ComboBoxItem>
+                    <ComboBoxItem>80</ComboBoxItem>
+                    <ComboBoxItem>90</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">100</ComboBoxItem>
+                </ComboBox>
+                <Button Content="Start Recording" Canvas.Left="116" Canvas.Top="307" Width="110" Click="BtnRecord_Click"/>
+                <Button Content="Stop Recording" Canvas.Left="231" Canvas.Top="307" Width="110" Click="BtnStop_Click"/>
 
             </Canvas>
         </TabItem>
