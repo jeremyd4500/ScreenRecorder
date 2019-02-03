@@ -24,7 +24,7 @@ namespace ScreenRecorder
         private string jsonPath = "../../Resources/AppSettings.json";
 
         public string filename;
-        public int monitorIndex;
+        public int monitorCount;
         public int frameRate;
         public int quality;
         public bool isRecording = false;
@@ -47,21 +47,34 @@ namespace ScreenRecorder
             List<string> screens = new List<string>();
             for(int i = 0; i < Screen.AllScreens.Length; i++)
             {
+                Debug.WriteLine("###############################################");
+                Debug.WriteLine(Screen.AllScreens[i]);
+                Debug.WriteLine("###############################################");
                 screens.Add("Display " + i + ": {Width=" + Screen.AllScreens[i].Bounds.Width + 
                     ", Height=" + Screen.AllScreens[i].Bounds.Height + ", Primary Screen=" + Screen.AllScreens[i].Primary + "}");
             }
-            MonitorSelection.ItemsSource = screens;
+            // MonitorCount.ItemsSource = screens;
+        }
+
+        private void BtnIdentify_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < Screen.AllScreens.Length; i++)
+            {
+                
+                // Identify identifier = new Identify(i);
+                // identifier.Show();
+            }
         }
 
         private void BtnRecord_Click(object sender, RoutedEventArgs e)
         {
             if (!isRecording)
             {
-                if (RecordingLocation.Text != "No Location Selected" && RecordingLocation.Text != "" && RecordingLocation.Text != null)
+                if (RecordingLocation.Text != "No Location Selected" && RecordingLocation.Text != "" && RecordingLocation.Text != null && Directory.Exists(RecordingLocation.Text))
                 {
                     isRecording = true;
                     filename = "\\" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".avi";
-                    rec = new Recorder(new RecorderParams(RecordingLocation.Text + filename, frameRate, SharpAvi.KnownFourCCs.Codecs.MotionJpeg, quality, monitorIndex));
+                    rec = new Recorder(new RecorderParams(RecordingLocation.Text + filename, frameRate, SharpAvi.KnownFourCCs.Codecs.MotionJpeg, quality, monitorCount));
                     UpdateJsonFile(settings);
                 } else
                 {
@@ -100,14 +113,14 @@ namespace ScreenRecorder
             }
         }
 
-        private void MonitorSelection_DataChanged(object sender, SelectionChangedEventArgs e)
+        private void MonitorCount_DataChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                monitorIndex = MonitorSelection.SelectedIndex;
-                settings.AppSettings[0].SelectedMonitor = monitorIndex;
-                Globals.startX = Screen.AllScreens[monitorIndex].Bounds.Left;
-                Globals.startY = Screen.AllScreens[monitorIndex].Bounds.Top;
+                monitorCount = int.Parse(MonitorCount.SelectedItem.ToString());
+                settings.AppSettings[0].MonitorCount = monitorCount;
+                Globals.startX = Screen.AllScreens[monitorCount].Bounds.Left;
+                Globals.startY = Screen.AllScreens[monitorCount].Bounds.Top;
             } catch(Exception ex)
             {
                 Debug.WriteLine(ex);
@@ -120,7 +133,7 @@ namespace ScreenRecorder
             try
             { 
                 frameRate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-                settings.AppSettings[0].SelectedFrameRate = frameRate;
+                settings.AppSettings[0].FrameRate = frameRate;
             } catch(Exception ex)
             {
                 Debug.WriteLine(ex);
@@ -132,7 +145,7 @@ namespace ScreenRecorder
             try
             {
                 quality = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-                settings.AppSettings[0].SelectedQuality = quality;
+                settings.AppSettings[0].Quality = quality;
             } catch(Exception ex)
             {
                 Debug.WriteLine(ex);
@@ -144,15 +157,15 @@ namespace ScreenRecorder
             RecordingLocation.Text = settings.AppSettings[0].RecordingLocation;
 
             AddMonitors();
-            monitorIndex = settings.AppSettings[0].SelectedMonitor;
-            MonitorSelection.SelectedIndex = monitorIndex;
-            Globals.startX = Screen.AllScreens[monitorIndex].Bounds.Left;
-            Globals.startY = Screen.AllScreens[monitorIndex].Bounds.Top;
+            monitorCount = settings.AppSettings[0].MonitorCount;
+            MonitorCount.SelectedIndex = monitorCount;
+            Globals.startX = Screen.AllScreens[monitorCount].Bounds.Left;
+            Globals.startY = Screen.AllScreens[monitorCount].Bounds.Top;
 
-            frameRate = settings.AppSettings[0].SelectedFrameRate;
+            frameRate = settings.AppSettings[0].FrameRate;
             FrameRateSelection.SelectedItem = frameRate;
 
-            quality = settings.AppSettings[0].SelectedQuality;
+            quality = settings.AppSettings[0].Quality;
             QualitySelection.SelectedItem = quality;
         }
 
@@ -175,13 +188,13 @@ namespace ScreenRecorder
         [JsonProperty("Recording-Location")]
         public string RecordingLocation { get; set; }
 
-        [JsonProperty("Selected-Monitor")]
-        public int SelectedMonitor { get; set; }
+        [JsonProperty("MonitorCount")]
+        public int MonitorCount { get; set; }
 
-        [JsonProperty("Selected-FrameRate")]
-        public int SelectedFrameRate { get; set; }
+        [JsonProperty("FrameRate")]
+        public int FrameRate { get; set; }
 
-        [JsonProperty("Selected-Quality")]
-        public int SelectedQuality { get; set; }
+        [JsonProperty("Quality")]
+        public int Quality { get; set; }
     }
 }

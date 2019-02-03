@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -9,7 +8,6 @@ using SharpAvi;
 using SharpAvi.Codecs;
 using SharpAvi.Output;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace ScreenRecorder
 {
@@ -143,7 +141,7 @@ namespace ScreenRecorder
             {
                 using (var g = Graphics.FromImage(BMP))
                 {
-                    g.CopyFromScreen(System.Drawing.Point.Empty, System.Drawing.Point.Empty, new System.Drawing.Size(Params.Width, Params.Height), CopyPixelOperation.SourceCopy);
+                    g.CopyFromScreen(Point.Empty, Point.Empty, new Size(Params.Width, Params.Height), CopyPixelOperation.SourceCopy);
 
                     g.Flush();
 
