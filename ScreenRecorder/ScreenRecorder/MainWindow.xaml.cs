@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Diagnostics;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ScreenRecorder
 {
@@ -44,21 +45,75 @@ namespace ScreenRecorder
 
         private void AddMonitors()
         {
-            List<string> screens = new List<string>();
-            for(int i = 0; i < Screen.AllScreens.Length; i++)
+            MonitorGrid.Children.Clear();
+
+            RowDefinition row = new RowDefinition();
+            MonitorGrid.RowDefinitions.Add(row);
+
+            AddMonitorHeader("Monitor", 70, 0);
+            AddMonitorHeader("Resolution", 195, 1);
+            AddMonitorHeader("Position", 70, 2);
+            AddMonitorHeader("Record", 60, 3);
+
+            for (int i = 1; i <= monitorCount; i++)
             {
-                Debug.WriteLine("###############################################");
-                Debug.WriteLine(Screen.AllScreens[i]);
-                Debug.WriteLine("###############################################");
-                screens.Add("Display " + i + ": {Width=" + Screen.AllScreens[i].Bounds.Width + 
-                    ", Height=" + Screen.AllScreens[i].Bounds.Height + ", Primary Screen=" + Screen.AllScreens[i].Primary + "}");
+                row = new RowDefinition();
+                System.Windows.Controls.Label name = new System.Windows.Controls.Label();
+
+                row.Height = new GridLength(22);
+                MonitorGrid.RowDefinitions.Add(row);
+
+                AddMonitorName(i);
+                AddMonitorResolution(i);
+                // AddMonitorPosition(i);
+                // AddMonitorRecord(i);
             }
-            // MonitorCount.ItemsSource = screens;
+        }
+
+        private void AddMonitorHeader(string title, int width, int columnIndex)
+        {
+            ColumnDefinition column = new ColumnDefinition();
+            System.Windows.Controls.Label name = new System.Windows.Controls.Label();
+            
+            column.Width = new GridLength(width);
+            MonitorGrid.ColumnDefinitions.Add(column);
+
+            name.Content = title;
+            name.Padding = new Thickness(0);
+            name.Margin = new Thickness(0);
+            name.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+            name.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+            name.BorderBrush = Brushes.Black;
+            name.BorderThickness = new Thickness(1);
+            name.Background = Brushes.DimGray;
+            Grid.SetRow(name, 0);
+            Grid.SetColumn(name, columnIndex);
+            MonitorGrid.Children.Add(name);
+        }
+
+        private void AddMonitorName(int columnIndex)
+        {
+            System.Windows.Controls.Label name = new System.Windows.Controls.Label();
+            name.Content = columnIndex.ToString();
+            name.Padding = new Thickness(0);
+            name.Margin = new Thickness(0);
+            name.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+            name.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+            name.BorderBrush = Brushes.Black;
+            name.BorderThickness = new Thickness(.5);
+            Grid.SetRow(name, columnIndex);
+            Grid.SetColumn(name, 0);
+            MonitorGrid.Children.Add(name);
+        }
+
+        private void AddMonitorResolution(int columnIndex)
+        {
+
         }
 
         private void BtnIdentify_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < Screen.AllScreens.Length; i++)
+            for (int i = 0; i < monitorCount; i++)
             {
                 
                 // Identify identifier = new Identify(i);
@@ -117,10 +172,9 @@ namespace ScreenRecorder
         {
             try
             {
-                monitorCount = int.Parse(MonitorCount.SelectedItem.ToString());
+                monitorCount = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
                 settings.AppSettings[0].MonitorCount = monitorCount;
-                Globals.startX = Screen.AllScreens[monitorCount].Bounds.Left;
-                Globals.startY = Screen.AllScreens[monitorCount].Bounds.Top;
+                AddMonitors();
             } catch(Exception ex)
             {
                 Debug.WriteLine(ex);
@@ -159,8 +213,6 @@ namespace ScreenRecorder
             AddMonitors();
             monitorCount = settings.AppSettings[0].MonitorCount;
             MonitorCount.SelectedIndex = monitorCount;
-            Globals.startX = Screen.AllScreens[monitorCount].Bounds.Left;
-            Globals.startY = Screen.AllScreens[monitorCount].Bounds.Top;
 
             frameRate = settings.AppSettings[0].FrameRate;
             FrameRateSelection.SelectedItem = frameRate;

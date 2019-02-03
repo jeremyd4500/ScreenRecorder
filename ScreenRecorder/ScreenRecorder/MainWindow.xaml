@@ -60,7 +60,7 @@
                 <Button Content="Stop Recording" Canvas.Left="231" Canvas.Top="307" Width="110" Click="BtnStop_Click"/>
                 <Button Content="Identify" Canvas.Left="621" Canvas.Top="36" Width="90" Height="22" Click="BtnIdentify_Click"/>
 
-                <Grid Canvas.Left="221" Canvas.Top="36" Name="MonitorGrid" Background="LightGray">
+                <Grid Canvas.Left="221" Canvas.Top="36" Name="MonitorGrid">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="22"/>
@@ -68,15 +68,20 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="185"/>
+                        <ColumnDefinition Width="195"/>
                         <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Monitor" Grid.Column="0" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness=".5"/>
-                    <Label Content="Resolution" Grid.Column="1" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness=".5"/>
-                    <Label Content="Primary" Grid.Column="2" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness=".5"/>
-                    <Label Content="Position" Grid.Column="3" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness=".5"/>
+                    <Label Content="Monitor" Grid.Column="0" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
+                    <Label Content="Resolution" Grid.Column="1" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
+                    <Label Content="Position" Grid.Column="2" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
+                    <Label Content="Record" Grid.Column="3" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
+                    <ComboBox Name="MonitorResolution" Grid.Column="1" Grid.Row="1" SelectionChanged="MonitorCount_DataChanged">
+                        <ComboBoxItem IsSelected="True">1920 x 1080</ComboBoxItem>
+                        <ComboBoxItem>2</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                    </ComboBox>
                 </Grid>
 
 
