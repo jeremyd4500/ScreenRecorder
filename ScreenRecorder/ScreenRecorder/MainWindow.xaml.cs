@@ -19,7 +19,6 @@ namespace ScreenRecorder
 
     public partial class Main : Window
     {
-
         private RootData settings;
         private string contents;
         private string jsonPath = "../../Resources/AppSettings.json";
@@ -28,6 +27,7 @@ namespace ScreenRecorder
         public int monitorCount;
         public int frameRate;
         public int quality;
+        public int monitorPosition;
         public bool isRecording = false;
         public Recorder rec;
 
@@ -40,19 +40,21 @@ namespace ScreenRecorder
             contents = File.ReadAllText(jsonPath);
             settings = JsonConvert.DeserializeObject<RootData>(contents);
 
+            monitorPosition = 0;
             UpdateFields(settings);
         }
 
         private void AddMonitors()
         {
+            monitorPosition = 0;
             MonitorGrid.Children.Clear();
 
             RowDefinition row = new RowDefinition();
             MonitorGrid.RowDefinitions.Add(row);
 
             AddMonitorHeader("Monitor", 70, 0);
-            AddMonitorHeader("Resolution", 195, 1);
-            AddMonitorHeader("Position", 70, 2);
+            AddMonitorHeader("Resolution", 180, 1);
+            AddMonitorHeader("Position", 85, 2);
             AddMonitorHeader("Record", 60, 3);
 
             for (int i = 1; i <= monitorCount; i++)
@@ -65,8 +67,8 @@ namespace ScreenRecorder
 
                 AddMonitorName(i);
                 AddMonitorResolution(i);
-                // AddMonitorPosition(i);
-                // AddMonitorRecord(i);
+                AddMonitorPosition(i);
+                AddMonitorRecord(i);
             }
         }
 
@@ -85,37 +87,86 @@ namespace ScreenRecorder
             name.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
             name.BorderBrush = Brushes.Black;
             name.BorderThickness = new Thickness(1);
-            name.Background = Brushes.DimGray;
+            name.Background = Brushes.Gray;
             Grid.SetRow(name, 0);
             Grid.SetColumn(name, columnIndex);
             MonitorGrid.Children.Add(name);
         }
 
-        private void AddMonitorName(int columnIndex)
+        private void AddMonitorName(int rowIndex)
         {
             System.Windows.Controls.Label name = new System.Windows.Controls.Label();
-            name.Content = columnIndex.ToString();
+            name.Content = rowIndex.ToString();
             name.Padding = new Thickness(0);
             name.Margin = new Thickness(0);
             name.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
             name.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
             name.BorderBrush = Brushes.Black;
             name.BorderThickness = new Thickness(.5);
-            Grid.SetRow(name, columnIndex);
+            Grid.SetRow(name, rowIndex);
             Grid.SetColumn(name, 0);
             MonitorGrid.Children.Add(name);
         }
 
-        private void AddMonitorResolution(int columnIndex)
+        private void AddMonitorPosition(int rowIndex)
         {
+            System.Windows.Controls.ComboBox resolution = new System.Windows.Controls.ComboBox();
+            Grid.SetRow(resolution, rowIndex);
+            Grid.SetColumn(resolution, 2);
+            if (monitorCount == 1)
+            {
+                resolution.Items.Add("Center");
+                resolution.SelectedIndex = monitorPosition;
+            } else if (monitorCount == 2)
+            {
+                resolution.Items.Add("Left");
+                resolution.Items.Add("Right");
+                resolution.SelectedIndex = monitorPosition;
+            } else
+            {
+                resolution.Items.Add("Left");
+                resolution.Items.Add("Center");
+                resolution.Items.Add("Right");
+                resolution.SelectedIndex = monitorPosition;
+            }
+            monitorPosition++;
+            resolution.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+            resolution.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+            MonitorGrid.Children.Add(resolution);
+        }
 
+        private void AddMonitorRecord(int rowIndex)
+        {
+            System.Windows.Controls.RadioButton selected = new System.Windows.Controls.RadioButton();
+            Grid.SetRow(selected, rowIndex);
+            Grid.SetColumn(selected, 3);
+            selected.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            selected.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            MonitorGrid.Children.Add(selected);
+        }
+
+        private void AddMonitorResolution(int rowIndex)
+        {
+            System.Windows.Controls.ComboBox resolution = new System.Windows.Controls.ComboBox();
+            Grid.SetRow(resolution, rowIndex);
+            Grid.SetColumn(resolution, 1);
+            resolution.Items.Add("1280 x 720");
+            resolution.Items.Add("1440 x 900");
+            resolution.Items.Add("1600 x 900");
+            resolution.Items.Add("1920 x 1080");
+            resolution.Items.Add("2048 x 1080");
+            resolution.Items.Add("2560 x 1440");
+            resolution.Items.Add("3840 x 2160");
+            resolution.SelectedIndex = 3;
+            resolution.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+            resolution.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+            MonitorGrid.Children.Add(resolution);
         }
 
         private void BtnIdentify_Click(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < monitorCount; i++)
             {
-                
                 // Identify identifier = new Identify(i);
                 // identifier.Show();
             }
@@ -139,7 +190,6 @@ namespace ScreenRecorder
             {
                 System.Windows.MessageBox.Show("You are already recording!");
             }
-                
         }
 
         private void BtnStop_Click(object sender, RoutedEventArgs e)
@@ -226,7 +276,6 @@ namespace ScreenRecorder
             string updatedFile = JsonConvert.SerializeObject(settings);
             File.WriteAllText(jsonPath, updatedFile);
         }
-        
     }
 
     public partial class RootData

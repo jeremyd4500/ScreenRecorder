@@ -21,19 +21,26 @@
     </Window.Resources>
 
     <TabControl Margin="2">
+        
         <TabItem Header="Video" Width="100">
+            
             <Canvas Width="780" Height="385">
+                
                 <TextBox Name="RecordingLocation" Height="23" Canvas.Left="116" TextWrapping="NoWrap" Canvas.Top="8" Width="405" IsEnabled="False" VerticalContentAlignment="Center"/>
+                
                 <Button Content="Select Folder" Canvas.Left="526" Canvas.Top="8" Width="90" Height="23" Click="BtnRecordingLocation_Click"/>
+                
                 <Label Content="Recording Location" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
                 <Label Content="Monitor Count" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
                 <Label Content="Frame Rate" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
                 <Label Content="Quality (%)" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                
                 <ComboBox Name="MonitorCount" Canvas.Left="116" Canvas.Top="36" Width="100" SelectionChanged="MonitorCount_DataChanged">
                     <ComboBoxItem IsSelected="True">1</ComboBoxItem>
                     <ComboBoxItem>2</ComboBoxItem>
                     <ComboBoxItem>3</ComboBoxItem>
                 </ComboBox>
+                
                 <ComboBox Name="FrameRateSelection" Canvas.Left="116" Canvas.Top="64" Width="100" SelectionChanged="FrameRateSelection_DataChanged">
                     <ComboBoxItem>10</ComboBoxItem>
                     <ComboBoxItem>20</ComboBoxItem>
@@ -44,6 +51,7 @@
                     <ComboBoxItem>100</ComboBoxItem>
                     <ComboBoxItem>144</ComboBoxItem>
                 </ComboBox>
+                
                 <ComboBox Name="QualitySelection" Canvas.Left="116" Canvas.Top="92" Width="100" SelectionChanged="QualitySelection_DataChanged">
                     <ComboBoxItem>10</ComboBoxItem>
                     <ComboBoxItem>20</ComboBoxItem>
@@ -56,42 +64,25 @@
                     <ComboBoxItem>90</ComboBoxItem>
                     <ComboBoxItem IsSelected="True">100</ComboBoxItem>
                 </ComboBox>
+                
                 <Button Content="Start Recording" Canvas.Left="116" Canvas.Top="307" Width="110" Click="BtnRecord_Click"/>
                 <Button Content="Stop Recording" Canvas.Left="231" Canvas.Top="307" Width="110" Click="BtnStop_Click"/>
                 <Button Content="Identify" Canvas.Left="621" Canvas.Top="36" Width="90" Height="22" Click="BtnIdentify_Click"/>
 
-                <Grid Canvas.Left="221" Canvas.Top="36" Name="MonitorGrid">
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="22"/>
-                        <RowDefinition Height="22"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="195"/>
-                        <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="60"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Label Content="Monitor" Grid.Column="0" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
-                    <Label Content="Resolution" Grid.Column="1" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
-                    <Label Content="Position" Grid.Column="2" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
-                    <Label Content="Record" Grid.Column="3" Grid.Row="0" Padding="0" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Background="DimGray"/>
-                    <ComboBox Name="MonitorResolution" Grid.Column="1" Grid.Row="1" SelectionChanged="MonitorCount_DataChanged">
-                        <ComboBoxItem IsSelected="True">1920 x 1080</ComboBoxItem>
-                        <ComboBoxItem>2</ComboBoxItem>
-                        <ComboBoxItem>3</ComboBoxItem>
-                    </ComboBox>
-                </Grid>
-
+                <Grid Canvas.Left="221" Canvas.Top="36" Name="MonitorGrid"/>
 
             </Canvas>
+            
         </TabItem>
+        
         <TabItem Header="Audio" Width="100">
+            
             <Canvas Width="780" Height="385">
 
             </Canvas>
+            
         </TabItem>
+        
     </TabControl>
 
 </Window>
