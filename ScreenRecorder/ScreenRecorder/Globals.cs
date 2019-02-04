@@ -7,9 +7,6 @@
 
         public static int StartX { get; set; }
         public static int StartY { get; set; }
-        public static int MonitorCount { get; set; }
-        public static int FrameRate { get; set; }
-        public static int Quality { get; set; }
 
         public static bool isRecording = false;
 

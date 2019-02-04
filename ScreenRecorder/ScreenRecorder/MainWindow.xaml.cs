@@ -36,9 +36,8 @@ namespace ScreenRecorder
 
         private void BtnIdentify_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 1; i <= Globals.MonitorCount; i++)
+            for (int i = 1; i <= Globals.Settings.MonitorCount; i++)
             {
-                GetMonitorResolution(i);
                 // Identify identifier = new Identify(i);
                 // identifier.Show();
             }
@@ -51,8 +50,9 @@ namespace ScreenRecorder
                 if (RecordingLocation.Text != "No Location Selected" && RecordingLocation.Text != "" && RecordingLocation.Text != null && Directory.Exists(RecordingLocation.Text))
                 {
                     Globals.isRecording = true;
-                    Globals.filename = "\\" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".avi";
-                    Globals.Rec = new Recorder(new RecorderParams(RecordingLocation.Text + Globals.filename, Globals.FrameRate, SharpAvi.KnownFourCCs.Codecs.MotionJpeg, Globals.Quality, Globals.MonitorCount));
+                    // Globals.filename = "\\" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".avi";
+                    // Globals.Rec = new Recorder(new RecorderParams(RecordingLocation.Text + Globals.filename, Globals.FrameRate, SharpAvi.KnownFourCCs.Codecs.MotionJpeg, Globals.Quality, Globals.Settings.MonitorCount));
+                    UpdateJsonMonitors();
                     UpdateJsonFile();
                 } else
                 {
@@ -95,12 +95,11 @@ namespace ScreenRecorder
             
             try
             {
-                Globals.MonitorCount = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-                Globals.Settings.MonitorCount = Globals.MonitorCount;
+                Globals.Settings.MonitorCount = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
                 AddMonitors();
             } catch(Exception ex)
             {
-                Debug.WriteLine(ex);
+                Debug.WriteLine("\nMonitor Count selection was changed. Attempted to parse the selected value.\nError Message: " + ex.Message);
             }
         }
 
@@ -109,12 +108,12 @@ namespace ScreenRecorder
             
             try
             {
-                Globals.FrameRate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-                Globals.Settings.FrameRate = Globals.FrameRate;
+                Globals.Settings.FrameRate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
+                Globals.Settings.FrameRate = Globals.Settings.FrameRate;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Debug.WriteLine("\nFramerate selection was changed. Attempted to parse the selected value.\nError Message: " + ex.Message);
             }
         }
 
@@ -123,12 +122,12 @@ namespace ScreenRecorder
             
             try
             {
-                Globals.Quality = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-                Globals.Settings.Quality = Globals.Quality;
+                Globals.Settings.Quality = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
+                Globals.Settings.Quality = Globals.Settings.Quality;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Debug.WriteLine("\nQuality selection was changed. Attempted to parse the selected value.\nError Message: " + ex.Message);
             }
         }
 
@@ -155,24 +154,26 @@ namespace ScreenRecorder
             AddMonitorHeader("Position", 85, 2);
             AddMonitorHeader("Capture", 60, 3);
 
-            for (int i = 1; i <= Globals.MonitorCount; i++)
+            for (int i = 1; i <= Globals.Settings.MonitorCount; i++)
             {
                 row = new RowDefinition();
-                System.Windows.Controls.Label name = new System.Windows.Controls.Label();
-
                 row.Height = new GridLength(22);
                 MonitorGrid.RowDefinitions.Add(row);
+                
+                try { UnregisterName("MonitorResolution" + i); } catch (Exception ex) { Debug.WriteLine("\nAttempted to unregister a resource name that did not exist.\nError Message: " + ex.Message); }
+                try { UnregisterName("MonitorPosition" + i); } catch (Exception ex) { Debug.WriteLine("\nAttempted to unregister a resource name that did not exist.\nError Message: " + ex.Message); }
+                try { UnregisterName("MonitorRecord" + i); } catch (Exception ex) { Debug.WriteLine("\nAttempted to unregister a resource name that did not exist.\nError Message: " + ex.Message); }
 
                 AddMonitorName(i);
                 AddMonitorResolution(i);
                 AddMonitorRecord(i);
             }
 
-            if (Globals.MonitorCount == 1)
+            if (Globals.Settings.MonitorCount == 1)
             {
                 AddMonitorPosition(Globals.positions1);
             }
-            else if (Globals.MonitorCount == 2)
+            else if (Globals.Settings.MonitorCount == 2)
             {
                 AddMonitorPosition(Globals.positions2);
             }
@@ -223,7 +224,7 @@ namespace ScreenRecorder
 
         public void AddMonitorPosition(string[] positions)
         {
-            for (int i = 1; i <= Globals.MonitorCount; i++)
+            for (int i = 1; i <= Globals.Settings.MonitorCount; i++)
             {
                 System.Windows.Controls.Label position = new System.Windows.Controls.Label
                 {
@@ -233,10 +234,12 @@ namespace ScreenRecorder
                     HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center,
                     VerticalContentAlignment = VerticalAlignment.Center,
                     BorderBrush = Brushes.Black,
-                    BorderThickness = new Thickness(.5)
+                    BorderThickness = new Thickness(.5),
+                    
                 };
                 Grid.SetRow(position, i);
                 Grid.SetColumn(position, 2);
+                RegisterName("MonitorPosition" + i, position);
                 MonitorGrid.Children.Add(position);
             }
         }
@@ -250,7 +253,7 @@ namespace ScreenRecorder
             };
             Grid.SetRow(selected, rowIndex);
             Grid.SetColumn(selected, 3);
-            
+            RegisterName("MonitorRecord" + rowIndex, selected);
             MonitorGrid.Children.Add(selected);
         }
 
@@ -271,45 +274,172 @@ namespace ScreenRecorder
             resolution.Items.Add("3840 x 2160");
             Grid.SetRow(resolution, rowIndex);
             Grid.SetColumn(resolution, 1);
+            RegisterName("MonitorResolution" + rowIndex, resolution);
             MonitorGrid.Children.Add(resolution);
         }
 
-        public UIElement GetGridElement(Grid g, int r, int c)
+        public void AddMonitorToJson(string position, int width, int height, bool selected, int comboboxindex)
         {
-            foreach (UIElement e in MonitorGrid.Children)
+            Monitor newMonitor = new Monitor() {
+                Position = position,
+                Width = width,
+                Height = height,
+                Selected = selected,
+                ComboBoxIndex = comboboxindex
+            };
+            Globals.Settings.Monitors.Add(newMonitor);
+        }
+
+        public string GetMonitorPosition(int index)
+        {
+            try
             {
-                if (e.GetType() == typeof(System.Windows.Controls.ComboBox) && Grid.GetRow(e) == r && Grid.GetColumn(e) == c)
-                {
-                    return e;
-                }   
+                System.Windows.Controls.Label position = (System.Windows.Controls.Label)FindName("MonitorPosition" + index);
+                return position.Content.ToString();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("\nAttempted to find a Label that did not exist.\nError Message: " + ex.Message);
             }
             return null;
         }
 
-        public void GetMonitorResolution(int index)
+        public int GetMonitorSelectedIndex(int index)
         {
-            UIElement combo = GetGridElement(MonitorGrid, index, 1);
-            Debug.WriteLine(combo.GetType());
+            try
+            {
+                System.Windows.Controls.ComboBox comboIndex = (System.Windows.Controls.ComboBox)FindName("MonitorResolution" + index);
+                return comboIndex.SelectedIndex;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
+            }
+            return -1;
+        }
+
+        public bool GetMonitorRecord(int index)
+        {
+            try
+            {
+                System.Windows.Controls.RadioButton selected = (System.Windows.Controls.RadioButton)FindName("MonitorRecord" + index);
+                return selected.IsChecked.Value;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
+            }
+            return false;
+        }
+
+        public string[] GetMonitorResolution(int index)
+        {
+            try
+            {
+                System.Windows.Controls.ComboBox resBox = (System.Windows.Controls.ComboBox)FindName("MonitorResolution"+index);
+                return resBox.Text.Split(null);
+            } catch (Exception ex)
+            {
+                Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
+            }
+            return null;
         }
 
         public void UpdateFields()
         {
-            Globals.MonitorCount = Globals.Settings.MonitorCount;
-            Globals.FrameRate = Globals.Settings.FrameRate;
-            Globals.Quality = Globals.Settings.Quality;
-
             RecordingLocation.Text = Globals.Settings.RecordingLocation;
-            MonitorCount.SelectedIndex = Globals.MonitorCount - 1;
-            FrameRateSelection.SelectedItem = Globals.FrameRate;
-            QualitySelection.SelectedItem = Globals.Quality;
+            MonitorCount.SelectedIndex = Globals.Settings.MonitorCount - 1;
+
+            int index = 0;
+            foreach (ComboBoxItem x in FrameRateSelection.Items)
+            {
+                if (x.Content.ToString() == Globals.Settings.FrameRate.ToString())
+                {
+                    FrameRateSelection.SelectedIndex = index;
+                    break;
+                } else
+                {
+                    index++;
+                }
+            }
+
+            index = 0;
+            foreach (ComboBoxItem x in QualitySelection.Items)
+            {
+                if (x.Content.ToString() == Globals.Settings.Quality.ToString())
+                {
+                    QualitySelection.SelectedIndex = index;
+                    break;
+                }
+                else
+                {
+                    index++;
+                }
+            }
 
             AddMonitors();
+            UpdateMonitorFields();
         }
 
         public void UpdateJsonFile()
         {
             string updatedFile = JsonConvert.SerializeObject(Globals.Settings);
             File.WriteAllText(Globals.jsonPath, updatedFile);
+        }
+
+        public void UpdateJsonMonitors()
+        {
+            Globals.Settings.Monitors.Clear();
+            for (int i = 1; i <= Globals.Settings.MonitorCount; i++)
+            {
+                string position = GetMonitorPosition(i);
+
+                int width, height;
+                string[] resXY = GetMonitorResolution(i);
+                if (resXY == null)
+                {
+                    width = 1920;
+                    height = 1080;
+                } else
+                {
+                    width = int.Parse(resXY[0]);
+                    height = int.Parse(resXY[2]);
+                }
+
+                bool selected = GetMonitorRecord(i);
+
+                int index = GetMonitorSelectedIndex(i);
+                if (position == null || index == -1)
+                {
+                    index = 3; // Set to 1920x1080
+                    width = 1920;
+                    height = 1080;
+                }
+
+                AddMonitorToJson(position, width, height, selected, index);
+            }
+
+        }
+
+        public void UpdateMonitorFields()
+        {
+            for (int i = 1; i <= Globals.Settings.MonitorCount; i++)
+            {
+                try
+                {
+                    System.Windows.Controls.ComboBox resBox = (System.Windows.Controls.ComboBox)FindName("MonitorResolution" + i);
+                    System.Windows.Controls.RadioButton selected = (System.Windows.Controls.RadioButton)FindName("MonitorRecord" + i);
+
+                    resBox.SelectedIndex = Globals.Settings.Monitors[i - 1].ComboBoxIndex;
+                    selected.IsChecked = Globals.Settings.Monitors[i - 1].Selected;
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
+                }
+
+            }
         }
     }
 }

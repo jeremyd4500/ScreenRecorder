@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ScreenRecorder
 {
@@ -11,7 +12,7 @@ namespace ScreenRecorder
         public int MonitorCount { get; set; }
 
         [JsonProperty("Monitors")]
-        public Monitors[] Monitors { get; set; }
+        public List<Monitor> Monitors { get; set; }
 
         [JsonProperty("FrameRate")]
         public int FrameRate { get; set; }
@@ -20,7 +21,7 @@ namespace ScreenRecorder
         public int Quality { get; set; }
     }
 
-    public partial class Monitors
+    public partial class Monitor
     {
         [JsonProperty("Position")]
         public string Position { get; set; }
@@ -30,6 +31,12 @@ namespace ScreenRecorder
 
         [JsonProperty("Height")]
         public int Height { get; set; }
+
+        [JsonProperty("Selected")]
+        public bool Selected { get; set; }
+
+        [JsonProperty("ComboBoxIndex")]
+        public int ComboBoxIndex { get; set; }
 
     }
 
