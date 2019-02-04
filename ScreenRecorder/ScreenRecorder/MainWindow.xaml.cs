@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace ScreenRecorder
 {
@@ -36,11 +37,9 @@ namespace ScreenRecorder
 
         private void BtnIdentify_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 1; i <= Globals.Settings.MonitorCount; i++)
-            {
-                // Identify identifier = new Identify(i);
-                // identifier.Show();
-            }
+            DisableFields();
+            IdentifyMonitors();
+            EnableFields();
         }
 
         private void BtnRecord_Click(object sender, RoutedEventArgs e)
@@ -290,6 +289,72 @@ namespace ScreenRecorder
             Globals.Settings.Monitors.Add(newMonitor);
         }
 
+        public void IdentifyMonitors()
+        {
+            if (Globals.Settings.MonitorCount == 1)
+            {
+                Identify identify1 = new Identify(1, 0);
+                identify1.Show();
+                WaitTime(2);
+                identify1.Close();
+
+            } else if (Globals.Settings.MonitorCount == 2)
+            {
+                Identify identify1 = new Identify(1, 0);
+                identify1.Show();
+                Identify identify2 = new Identify(2, Globals.Settings.Monitors[0].Width);
+                identify2.Show();
+                WaitTime(2);
+                identify1.Close();
+                identify2.Close();
+            } else
+            {
+                Identify identify1 = new Identify(1, (Globals.Settings.Monitors[0].Width * -1));
+                identify1.Show();
+                Identify identify2 = new Identify(2, 0);
+                identify2.Show();
+                Identify identify3 = new Identify(3, Globals.Settings.Monitors[1].Width);
+                identify3.Show();
+                WaitTime(2);
+                identify1.Close();
+                identify2.Close();
+                identify3.Close();
+            }
+        }
+
+        public void DisableFields()
+        {
+            SelectFolder.IsEnabled = false;
+            MonitorCount.IsEnabled = false;
+            FrameRateSelection.IsEnabled = false;
+            QualitySelection.IsEnabled = false;
+            StartRecording.IsEnabled = false;
+            StopRecording.IsEnabled = false;
+            IdentifyScreens.IsEnabled = false;
+
+            foreach(UIElement element in MonitorGrid.Children)
+            {
+                element.IsEnabled = false;
+            }
+
+        }
+
+        public void EnableFields()
+        {
+            SelectFolder.IsEnabled = true;
+            MonitorCount.IsEnabled = true;
+            FrameRateSelection.IsEnabled = true;
+            QualitySelection.IsEnabled = true;
+            StartRecording.IsEnabled = true;
+            StopRecording.IsEnabled = true;
+            IdentifyScreens.IsEnabled = true;
+
+            foreach (UIElement element in MonitorGrid.Children)
+            {
+                element.IsEnabled = true;
+            }
+        }
+
         public string GetMonitorPosition(int index)
         {
             try
@@ -302,20 +367,6 @@ namespace ScreenRecorder
                 Debug.WriteLine("\nAttempted to find a Label that did not exist.\nError Message: " + ex.Message);
             }
             return null;
-        }
-
-        public int GetMonitorSelectedIndex(int index)
-        {
-            try
-            {
-                System.Windows.Controls.ComboBox comboIndex = (System.Windows.Controls.ComboBox)FindName("MonitorResolution" + index);
-                return comboIndex.SelectedIndex;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
-            }
-            return -1;
         }
 
         public bool GetMonitorRecord(int index)
@@ -343,6 +394,20 @@ namespace ScreenRecorder
                 Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
             }
             return null;
+        }
+
+        public int GetMonitorSelectedIndex(int index)
+        {
+            try
+            {
+                System.Windows.Controls.ComboBox comboIndex = (System.Windows.Controls.ComboBox)FindName("MonitorResolution" + index);
+                return comboIndex.SelectedIndex;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
+            }
+            return -1;
         }
 
         public void UpdateFields()
@@ -439,6 +504,16 @@ namespace ScreenRecorder
                     Debug.WriteLine("\nAttempted to find a ComboBox that did not exist.\nError Message: " + ex.Message);
                 }
 
+            }
+        }
+
+        private void WaitTime(int seconds)
+        {
+            if (seconds < 1) return;
+            DateTime _desired = DateTime.Now.AddSeconds(seconds);
+            while (DateTime.Now < _desired)
+            {
+                System.Windows.Forms.Application.DoEvents();
             }
         }
     }

@@ -27,7 +27,7 @@
                 
                 <TextBox Name="RecordingLocation" Height="23" Canvas.Left="116" TextWrapping="NoWrap" Canvas.Top="8" Width="405" IsEnabled="False" VerticalContentAlignment="Center"/>
                 
-                <Button Content="Select Folder" Canvas.Left="526" Canvas.Top="8" Width="90" Height="23" Click="BtnRecordingLocation_Click"/>
+                <Button Name="SelectFolder" Content="Select Folder" Canvas.Left="526" Canvas.Top="8" Width="90" Height="23" Click="BtnRecordingLocation_Click"/>
                 
                 <Label Content="Recording Location" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
                 <Label Content="Monitor Count" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
@@ -64,9 +64,9 @@
                     <ComboBoxItem IsSelected="True">100</ComboBoxItem>
                 </ComboBox>
                 
-                <Button Content="Start Recording" Canvas.Left="116" Canvas.Top="307" Width="110" Click="BtnRecord_Click"/>
-                <Button Content="Stop Recording" Canvas.Left="231" Canvas.Top="307" Width="110" Click="BtnStop_Click"/>
-                <Button Content="Identify" Canvas.Left="621" Canvas.Top="36" Width="90" Height="22" Click="BtnIdentify_Click"/>
+                <Button Name="StartRecording" Content="Start Recording" Canvas.Left="116" Canvas.Top="307" Width="110" Click="BtnRecord_Click"/>
+                <Button Name="StopRecording" Content="Stop Recording" Canvas.Left="231" Canvas.Top="307" Width="110" Click="BtnStop_Click"/>
+                <Button Name="IdentifyScreens" Content="Identify" Canvas.Left="621" Canvas.Top="36" Width="90" Height="22" Click="BtnIdentify_Click"/>
 
                 <Grid  Name="MonitorGrid" Canvas.Left="221" Canvas.Top="36"/>
 
