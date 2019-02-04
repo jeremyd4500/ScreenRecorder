@@ -16,8 +16,7 @@
         Icon="./Resources/favicon.ico">
 
     <Window.Resources>
-        <sys:Int32 x:Key="startX">0</sys:Int32>
-        <sys:Int32 x:Key="startY">0</sys:Int32>
+        <ComboBox x:Key="MonitorResOne" Name="MonitorResOne"/>
     </Window.Resources>
 
     <TabControl Margin="2">
@@ -69,7 +68,7 @@
                 <Button Content="Stop Recording" Canvas.Left="231" Canvas.Top="307" Width="110" Click="BtnStop_Click"/>
                 <Button Content="Identify" Canvas.Left="621" Canvas.Top="36" Width="90" Height="22" Click="BtnIdentify_Click"/>
 
-                <Grid Canvas.Left="221" Canvas.Top="36" Name="MonitorGrid"/>
+                <Grid  Name="MonitorGrid" Canvas.Left="221" Canvas.Top="36"/>
 
             </Canvas>
             

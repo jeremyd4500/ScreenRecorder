@@ -61,8 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AppMethods.cs" />
-    <Compile Include="AppSetttings.cs" />
+    <Compile Include="AppSettings.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Identify.xaml.cs">
       <DependentUpon>Identify.xaml</DependentUpon>

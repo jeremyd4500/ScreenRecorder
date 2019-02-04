@@ -6,14 +6,14 @@
         xmlns:local="clr-namespace:ScreenRecorder"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Screen Identifier"
         WindowStartupLocation="Manual"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize" 
         Topmost="True"
         WindowState="Normal" 
+        Title="Identify"
         Icon="./Resources/favicon.ico">
 
-    <Label Name="ScreenIdentifierNum" Content="0" FontSize="100" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" Margin="0"/>
+    <Label Name="ScreenIdentifierNum" Content="0" FontSize="100" Width="150" Height="150"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" Margin="0"/>
 
 </Window>

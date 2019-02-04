@@ -2,11 +2,23 @@
 {
     public static class Globals
     {
-        public static int startX { get; set; }
-        public static int startY { get; set; }
-        public static int monitorCount { get; set; }
-        public static int frameRate { get; set; }
-        public static int quality { get; set; }
-        public static AppSettings settings { get; set; }
+        public static AppSettings Settings { get; set; }
+        public static Recorder Rec { get; set; }
+
+        public static int StartX { get; set; }
+        public static int StartY { get; set; }
+        public static int MonitorCount { get; set; }
+        public static int FrameRate { get; set; }
+        public static int Quality { get; set; }
+
+        public static bool isRecording = false;
+
+        public static string jsonPath = "../../Resources/AppSettings.json";
+        public static string contents;
+        public static string filename;
+
+        public static string[] positions1 = { "Center" };
+        public static string[] positions2 = { "Left", "Right" };
+        public static string[] positions3 = { "Left", "Center", "Right" };
     }
 }

@@ -146,8 +146,8 @@ namespace ScreenRecorder
                     g.Flush();
 
                     // Need these for finding which monitor to use.
-                    int startX = Globals.startX;
-                    int startY = Globals.startY;
+                    int startX = Globals.StartX;
+                    int startY = Globals.StartY;
 
                     var bits = BMP.LockBits(new Rectangle(0, 0, Params.Width, Params.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
                     Marshal.Copy(bits.Scan0, Buffer, 0, Buffer.Length);
