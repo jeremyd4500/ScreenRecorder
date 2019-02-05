@@ -7,12 +7,15 @@
 
         public static int StartX { get; set; }
         public static int StartY { get; set; }
+        public static int Monitor1X { get; set; }
+        public static int Monitor2X { get; set; }
+        public static int Monitor3X { get; set; }
 
         public static bool isRecording = false;
 
         public static string jsonPath = "../../Resources/AppSettings.json";
-        public static string contents;
-        public static string filename;
+        public static string Contents { get; set; }
+        public static string FileName { get; set; }
 
         public static string[] positions1 = { "Center" };
         public static string[] positions2 = { "Left", "Right" };

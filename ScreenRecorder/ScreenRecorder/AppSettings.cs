@@ -35,6 +35,9 @@ namespace ScreenRecorder
         [JsonProperty("Selected")]
         public bool Selected { get; set; }
 
+        [JsonProperty("Primary")]
+        public bool Primary { get; set; }
+
         [JsonProperty("ComboBoxIndex")]
         public int ComboBoxIndex { get; set; }
 

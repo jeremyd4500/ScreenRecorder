@@ -8,6 +8,7 @@ using SharpAvi;
 using SharpAvi.Codecs;
 using SharpAvi.Output;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ScreenRecorder
 {
@@ -22,15 +23,23 @@ namespace ScreenRecorder
         public int Height { get; private set; }
         public int Width { get; private set; }
 
-    public RecorderParams(string filename, int FrameRate, FourCC Encoder, int Quality, int ScreenIndex)
+        public RecorderParams(string filename, int FrameRate, FourCC Encoder, int Quality)
         {
             FileName = filename;
             FramesPerSecond = FrameRate;
             Codec = Encoder;
             this.Quality = Quality;
 
-            Height = Screen.AllScreens[ScreenIndex].Bounds.Height;
-            Width = Screen.AllScreens[ScreenIndex].Bounds.Width;
+            Height = 0;
+            foreach(Monitor monitor in Globals.Settings.Monitors)
+            {
+                Width += monitor.Width;
+                if (monitor.Height > Height)
+                {
+                    Height = monitor.Height;
+                }
+            }
+            
             // Width = 3840; Screencap starts wherever primary monitor is.
         }
 
@@ -137,20 +146,30 @@ namespace ScreenRecorder
 
         public void Screenshot(byte[] Buffer)
         {
-            using (var BMP = new Bitmap(Params.Width, Params.Height))
+            using (var BMP = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height))
             {
                 using (var g = Graphics.FromImage(BMP))
                 {
-                    g.CopyFromScreen(Point.Empty, Point.Empty, new Size(Params.Width, Params.Height), CopyPixelOperation.SourceCopy);
+                    Debug.WriteLine("########################################");
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Bottom);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Height);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Left);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Location);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Right);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Size);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Top);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Width);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.X);
+                    Debug.WriteLine(SystemInformation.VirtualScreen.Y);
+                    Debug.WriteLine("########################################");
+
+                    g.CopyFromScreen(0, SystemInformation.VirtualScreen.Top, 0, 0, BMP.Size);
 
                     g.Flush();
 
-                    // Need these for finding which monitor to use.
-                    int startX = Globals.StartX;
-                    int startY = Globals.StartY;
-
-                    var bits = BMP.LockBits(new Rectangle(0, 0, Params.Width, Params.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
-                    Marshal.Copy(bits.Scan0, Buffer, 0, Buffer.Length);
+                    Globals.StartY = 0; //temporary
+                    var bits = BMP.LockBits(new Rectangle(0, 0, 1920, SystemInformation.VirtualScreen.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
+                    Marshal.Copy(bits.Scan0, Buffer, 0, 1920);
                     BMP.UnlockBits(bits);
                 }
             }
