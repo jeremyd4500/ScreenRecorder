@@ -7,6 +7,8 @@
 
         public static int StartX { get; set; }
         public static int StartY { get; set; }
+        public static int SizeW { get; set; }
+        public static int SizeH { get; set; }
         public static int Monitor1X { get; set; }
         public static int Monitor2X { get; set; }
         public static int Monitor3X { get; set; }

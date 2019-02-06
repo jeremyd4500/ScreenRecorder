@@ -66,6 +66,11 @@ namespace ScreenRecorder
                             {
                                 DisableFields(false);
                                 Globals.StartX = GetSelectedMonitorStartPosition(i);
+                                Globals.SizeW = Globals.Settings.Monitors[i].Width;
+                                Globals.SizeH = Globals.Settings.Monitors[i].Height;
+                                Debug.WriteLine(Globals.StartX);
+                                Debug.WriteLine(Globals.SizeW);
+                                Debug.WriteLine(Globals.SizeH);
                                 Globals.Rec = new Recorder(new RecorderParams(RecordingLocation.Text + Globals.FileName, Globals.Settings.FrameRate, SharpAvi.KnownFourCCs.Codecs.MotionJpeg, Globals.Settings.Quality));
                                 UpdateJsonFile();
                                 break;
