@@ -146,7 +146,8 @@ namespace ScreenRecorder
 
         public void Screenshot(byte[] Buffer)
         {
-            using (var BMP = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height))
+            using (var BMP = new Bitmap(6400, 1440))
+            // using (var BMP = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height))
             {
                 using (var g = Graphics.FromImage(BMP))
                 {
@@ -163,15 +164,16 @@ namespace ScreenRecorder
                     Debug.WriteLine(SystemInformation.VirtualScreen.Y);
                     Debug.WriteLine("########################################");
 
-                    g.CopyFromScreen(0, SystemInformation.VirtualScreen.Top, 0, 0, BMP.Size);
+                    g.CopyFromScreen(0, 0, 0, 0, new Size(2560, 1440));
 
-                    g.Flush();
+                    //g.Flush();
 
-                    Globals.StartY = 0; //temporary
-                    var bits = BMP.LockBits(new Rectangle(0, 0, 1920, SystemInformation.VirtualScreen.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
-                    Marshal.Copy(bits.Scan0, Buffer, 0, 1920);
-                    BMP.UnlockBits(bits);
+                    //Globals.StartY = 0; //temporary
+                    //var bits = BMP.LockBits(new Rectangle(0, 0, SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppRgb);
+                    //Marshal.Copy(bits.Scan0, Buffer, 0, Buffer.Length);
+                    //BMP.UnlockBits(bits);
                 }
+                BMP.Save("C:\\users\\jerem\\Downloads\\ScreenGrab.Jpeg", ImageFormat.Jpeg);
             }
         }
     }

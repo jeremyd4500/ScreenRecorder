@@ -19,6 +19,11 @@ namespace ScreenRecorder
             Title = "Screen Recorder";
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
+            //foreach (Screen screen in Screen.AllScreens)
+            //{
+            //    Debug.WriteLine(screen);
+            //}
+
             // Default Json File
             // {"Recording-Location":"Select A Folder","MonitorCount":1,"Monitors":[],"FrameRate":60,"Quality":100}
             Globals.Contents = File.ReadAllText(Globals.jsonPath);
