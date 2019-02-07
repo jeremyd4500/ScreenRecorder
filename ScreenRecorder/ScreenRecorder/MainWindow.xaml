@@ -8,33 +8,43 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d"
     Title="Screen Recorder"
-    Background="Gray"
-    Height="450" 
-    Width="800" 
+    Background="LightGray"
+    SizeToContent="WidthAndHeight"
     ResizeMode="NoResize" 
     Topmost="False"
     WindowState="Normal" 
     Icon="./Resources/favicon.ico">
 
-    <TabControl Margin="2">
+    <Canvas Width="740" Height="450">
 
-        <TabItem Header="Video" Width="100">
+        <Label Content="Video" Canvas.Top="10" Canvas.Left="10" Width="90" Height="22" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderBrush="Black" 
+                       BorderThickness="1" Padding="0" Background="White"/>
+        
+        <Border BorderBrush="Black" Canvas.Top="30" Canvas.Left="10" Width="720" Height="125" BorderThickness="1" Background="White">
 
-            <Canvas Width="780" Height="385">
+            <Canvas Width="auto" Height="auto">
 
                 <TextBox Name="RecordingLocation" Height="23" Canvas.Left="116" TextWrapping="NoWrap" Canvas.Top="8" Width="405" IsEnabled="False" VerticalContentAlignment="Center"/>
 
                 <Button Name="SelectFolder" Content="Select Folder" Canvas.Left="526" Canvas.Top="8" Width="90" Height="23" Click="BtnRecordingLocation_Click"/>
+                <Button Name="OpenFolder" Content="Open Folder" Canvas.Left="621" Canvas.Top="8" Width="90" Height="23" Click="BtnOpenFolder_Click"/>
 
                 <Label Content="Recording Location" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
-                <Label Content="Monitor Count" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                <Label Content="Screen Resolution" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
                 <Label Content="Frame Rate" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
                 <Label Content="Quality (%)" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
 
-                <Label Name="MonitorCount" Canvas.Left="116" Canvas.Top="36" Width="100" Height="22" VerticalContentAlignment="Center" 
-                           HorizontalContentAlignment="Center" Padding="0" BorderBrush="#FF707070" BorderThickness="1" Background="#FFDDDDDD"/>
+                <ComboBox Name="ScreenResolution" Canvas.Left="116" Canvas.Top="36" Width="100" SelectionChanged="DrpScreenResolution_DataChanged">
+                    <ComboBoxItem>1280 x 720</ComboBoxItem>
+                    <ComboBoxItem>1440 x 900</ComboBoxItem>
+                    <ComboBoxItem>1600 x 900</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">1920 x 1080</ComboBoxItem>
+                    <ComboBoxItem>2048 x 1080</ComboBoxItem>
+                    <ComboBoxItem>2560 x 1440</ComboBoxItem>
+                    <ComboBoxItem>3840 x 2160</ComboBoxItem>
+                </ComboBox>
 
-                <ComboBox Name="FrameRateSelection" Canvas.Left="116" Canvas.Top="64" Width="100" SelectionChanged="FrameRateSelection_DataChanged">
+                <ComboBox Name="FrameRateSelection" Canvas.Left="116" Canvas.Top="64" Width="100" SelectionChanged="DrpFrameRateSelection_DataChanged">
                     <ComboBoxItem>10</ComboBoxItem>
                     <ComboBoxItem>20</ComboBoxItem>
                     <ComboBoxItem>30</ComboBoxItem>
@@ -45,7 +55,7 @@
                     <ComboBoxItem>144</ComboBoxItem>
                 </ComboBox>
 
-                <ComboBox Name="QualitySelection" Canvas.Left="116" Canvas.Top="92" Width="100" SelectionChanged="QualitySelection_DataChanged">
+                <ComboBox Name="QualitySelection" Canvas.Left="116" Canvas.Top="92" Width="100" SelectionChanged="DrpQualitySelection_DataChanged">
                     <ComboBoxItem>10</ComboBoxItem>
                     <ComboBoxItem>20</ComboBoxItem>
                     <ComboBoxItem>30</ComboBoxItem>
@@ -58,24 +68,26 @@
                     <ComboBoxItem IsSelected="True">100</ComboBoxItem>
                 </ComboBox>
 
-                <Button Name="StartRecording" Content="Start Recording" Canvas.Left="116" Canvas.Top="307" Width="110" Click="BtnRecord_Click"/>
-                <Button Name="StopRecording" Content="Stop Recording" Canvas.Left="231" Canvas.Top="307" Width="110" Click="BtnStop_Click"/>
-                <Button Name="IdentifyScreens" Content="Identify" Canvas.Left="621" Canvas.Top="36" Width="90" Height="22" Click="BtnIdentify_Click"/>
-
-                <Grid  Name="MonitorGrid" Canvas.Left="221" Canvas.Top="36"/>
+                <Button Name="IdentifyScreens" Content="Identify" Canvas.Left="221" Canvas.Top="36" Width="90" Height="22" Click="BtnIdentify_Click"/>
 
             </Canvas>
 
-        </TabItem>
+        </Border>
 
-        <TabItem Header="Audio" Width="100">
+        <Label Content="Audio" Canvas.Top="165" Canvas.Left="10" Width="90" Height="22" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderBrush="Black" 
+                       BorderThickness="1" Padding="0" Background="White"/>
+        
+        <Border BorderBrush="Black" Canvas.Top="185" Canvas.Left="10" Width="720" Height="225" BorderThickness="1" Background="White">
 
-            <Canvas Width="780" Height="385">
-
+            <Canvas Width="auto" Height="auto">
+                
             </Canvas>
 
-        </TabItem>
+        </Border>
 
-    </TabControl>
+        <Button Name="StartRecording" Content="Start Recording" Canvas.Right="130" Canvas.Bottom="10" Width="110" Click="BtnRecord_Click" Background="White"/>
+        <Button Name="StopRecording" Content="Stop Recording" Canvas.Right="10" Canvas.Bottom="10" Width="110" Click="BtnStop_Click" Background="White"/>
+
+    </Canvas>
 
 </Window>

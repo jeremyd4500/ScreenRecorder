@@ -1,0 +1,19 @@
+﻿<Window x:Class="ScreenRecorder.Identify"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScreenRecorder"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        WindowStartupLocation="Manual"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize" 
+        Topmost="True"
+        WindowState="Normal" 
+        Title="Identify"
+        Icon="./Resources/favicon.ico">
+
+    <Label Name="ScreenIdentifierNum" Content="0" FontSize="100" Width="150" Height="150"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" Margin="0"/>
+
+</Window>
