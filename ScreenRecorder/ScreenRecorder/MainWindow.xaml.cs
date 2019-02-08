@@ -24,6 +24,7 @@ namespace ScreenRecorder
         // Any CPU
         // private string jsonPath = "../../Resources/AppSettings.json";
         private string jsonPath = "Resources/AppSettings.json"; // 64bit
+        private string logPath = "Resources/Log.txt"; 
         private string Contents { get; set; }
         private string FileName { get; set; }
 
@@ -32,12 +33,16 @@ namespace ScreenRecorder
             InitializeComponent();
             Title = "Screen Recorder";
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            UpdateLogFile("Main window content loaded.");
 
             // Default Json File
             // {"Recording-Location":"Select Recording Location","ScreenWidth":1920,"ScreenHeight":1080,"FrameRate":60,"Quality":100}
             Contents = File.ReadAllText(jsonPath);
+            UpdateLogFile("Read in file: " + jsonPath);
             Settings = JsonConvert.DeserializeObject<AppSettings>(Contents);
+            UpdateLogFile("Deserialized AppSettings.json into an Object.");
             UpdateFields();
+            UpdateLogFile("Updated data fields in the app window.");
         }
 
         // ################################################################################################################
@@ -52,25 +57,31 @@ namespace ScreenRecorder
 
         private void BtnIdentify_Click(object sender, RoutedEventArgs e)
         {
+            UpdateLogFile("Identify button was clicked.");
             DisableFields(true);
             Identify identifier = new Identify(1, Screen.PrimaryScreen.Bounds.Left);
             identifier.Show();
+            UpdateLogFile("Created an Identify object and displayed it.");
             WaitTime(2);
             identifier.Close();
+            UpdateLogFile("Closed the Identify object");
             EnableFields();
         }
 
         private void BtnOpenFolder_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(RecordingLocation.Text);
+            UpdateLogFile("Open Folder button was clicked.");
         }
 
         private void BtnRecord_Click(object sender, RoutedEventArgs e)
         {
+            UpdateLogFile("Start Recording button was clicked.");
             if (Directory.Exists(RecordingLocation.Text))
             {
                 isRecording = true;
                 FileName = RecordingLocation.Text + "\\" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".mp4";
+                UpdateLogFile("New recording file: " + FileName);
                 Record(FileName);
                 DisableFields(false);
                 UpdateJsonFile();
@@ -86,6 +97,7 @@ namespace ScreenRecorder
             {
                 EnableFields();
                 Rec.Stop();
+                UpdateLogFile("Recording stopped.");
                 isRecording = false;
             } else
             {
@@ -95,40 +107,36 @@ namespace ScreenRecorder
 
         private void BtnRecordingLocation_Click(object sender, RoutedEventArgs e)
         {
+            UpdateLogFile("Select Folder button was clicked.");
             FolderBrowserDialog folderObj = new FolderBrowserDialog();
             folderObj.ShowDialog();
             if (folderObj.SelectedPath != null && folderObj.SelectedPath != "")
             {
                 RecordingLocation.Text = folderObj.SelectedPath;
                 Settings.RecordingLocation = folderObj.SelectedPath;
+                UpdateLogFile("Recording Location has been changed. New value: " + Settings.RecordingLocation);
+            } else
+            {
+                UpdateLogFile("Recording Location was not changed.");
             }
         }
 
         private void CbHardwareEncoding_Click(object sender, RoutedEventArgs e)
         {
             Settings.HardwareEncoding = HardwareEncoding.IsChecked.Value;
+            UpdateLogFile("Hardware Encoding checkbox was clicked. New value: " + Settings.HardwareEncoding);
         }
 
         private void CbLowLatency_Click(object sender, RoutedEventArgs e)
         {
             Settings.LowLatency = LowLatency.IsChecked.Value;
+            UpdateLogFile("Low Latency checkbox was clicked. New value: " + Settings.LowLatency);
         }
 
         private void CbRecordMouse_Click(object sender, RoutedEventArgs e)
         {
             Settings.RecordMouse = RecordMouse.IsChecked.Value;
-        }
-
-        private void DrpFrameRateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                Settings.FrameRate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("\nFramerate selection was changed. Attempted to parse the selected value.\nError Message: " + ex.Message);
-            }
+            UpdateLogFile("Record Mouse checkbox was clicked. New value: " + Settings.RecordMouse);
         }
 
         private void DrpBitrateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
@@ -137,10 +145,24 @@ namespace ScreenRecorder
             try
             {
                 Settings.VideoBitrate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
+                UpdateLogFile("Video Bitrate selection has been changed. New value: " + Settings.VideoBitrate);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("\nQuality selection was changed. Attempted to parse the selected value.\nError Message: " + ex.Message);
+                UpdateLogFile("Video bitrate selection was changed. Attempted to parse the selected value. Error Message: " + ex.Message);
+            }
+        }
+
+        private void DrpFrameRateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                Settings.FrameRate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
+                UpdateLogFile("Framerate selection has been changed. New value: " + Settings.FrameRate);
+            }
+            catch (Exception ex)
+            {
+                UpdateLogFile("Framerate selection was changed. Attempted to parse the selected value. Error Message: " + ex.Message);
             }
         }
 
@@ -151,10 +173,11 @@ namespace ScreenRecorder
                 string[] newRes = ((e.AddedItems[0] as ComboBoxItem).Content as string).Split(null);
                 Settings.ScreenWidth = int.Parse(newRes[0]);
                 Settings.ScreenHeight = int.Parse(newRes[2]);
+                UpdateLogFile("Screen Resolution selection has been changed. New value: " + (e.AddedItems[0] as ComboBoxItem).Content as string);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("\nScreen Resolution selection was changed. Attempted to parse the selected value.\nError Message: " + ex.Message);
+                UpdateLogFile("Screen Resolution selection was changed. Attempted to parse the selected value. Error Message: " + ex.Message);
             }
         }
 
@@ -184,6 +207,7 @@ namespace ScreenRecorder
                 StopRecording.IsEnabled = false;
             }
             IdentifyScreens.IsEnabled = false;
+            UpdateLogFile("Main window fields have been disabled.");
         }
 
         private void EnableFields()
@@ -199,21 +223,24 @@ namespace ScreenRecorder
             StartRecording.IsEnabled = true;
             StopRecording.IsEnabled = true;
             IdentifyScreens.IsEnabled = true;
+            UpdateLogFile("Main window fields have been enabled.");
         }
 
         private void Rec_OnRecordingFailed(object sender, RecordingFailedEventArgs e)
         {
             string error = e.Error;
-            System.Windows.Forms.MessageBox.Show(error);
+            UpdateLogFile("Recorder through an error. Error message: " + error);
         }
 
         private void Rec_OnStatusChanged(object sender, RecordingStatusEventArgs e)
         {
             RecorderStatus status = e.Status;
+            UpdateLogFile("Recorder status has changed. New status: " + e.Status.ToString());
         }
 
         private void Record(string path)
         {
+            UpdateLogFile("Creating recording options.");
             RecorderOptions options = new RecorderOptions
             {
                 RecorderMode = RecorderMode.Video,
@@ -228,9 +255,9 @@ namespace ScreenRecorder
                 IsMp4FastStartEnabled = false,
                 AudioOptions = new AudioOptions
                 {
-                    Bitrate = A_bitrate,
+                    Bitrate = AudioBitrate.bitrate_128kbps,
                     Channels = AudioChannels.Stereo,
-                    IsAudioEnabled = true
+                    IsAudioEnabled = false
                 },
                 VideoOptions = new VideoOptions
                 {
@@ -242,9 +269,11 @@ namespace ScreenRecorder
                     EncoderProfile = H264Profile.Main
                 }
             };
+            UpdateLogFile("Creating Recorder object.");
             Rec = Recorder.CreateRecorder(options);
             Rec.OnRecordingFailed += Rec_OnRecordingFailed;
             Rec.OnStatusChanged += Rec_OnStatusChanged;
+            UpdateLogFile("Recording started.");
             Rec.Record(path);
         }
 
@@ -261,6 +290,7 @@ namespace ScreenRecorder
                 {
                     ScreenResolution.SelectedIndex = index;
                     screenResFound = true;
+                    UpdateLogFile("Actual screen resolution among the options. Selected value: " + monitorRes);
                     break;
                 }
                 else
@@ -273,6 +303,7 @@ namespace ScreenRecorder
             {
                 ScreenResolution.Items.Add(monitorRes);
                 ScreenResolution.SelectedIndex = index;
+                UpdateLogFile("Actual screen resolution was not found but was added to the options. New value: " + monitorRes);
             }
 
             index = 0;
@@ -280,6 +311,7 @@ namespace ScreenRecorder
             {
                 if (x.Content.ToString() == Settings.FrameRate.ToString())
                 {
+                    UpdateLogFile("Framerate selection was changed. Current selected index: " + index);
                     FrameRateSelection.SelectedIndex = index;
                     break;
                 } else
@@ -293,6 +325,7 @@ namespace ScreenRecorder
             {
                 if (x.Content.ToString() == Settings.VideoBitrate.ToString())
                 {
+                    UpdateLogFile("Bitrate selction was changed. Current selected index: " + index);
                     BitrateSelection.SelectedIndex = index;
                     break;
                 }
@@ -303,14 +336,26 @@ namespace ScreenRecorder
             }
 
             HardwareEncoding.IsChecked = Settings.HardwareEncoding;
+            UpdateLogFile("Hardware Encoding checkbox was updated. New value: " + Settings.HardwareEncoding);
             LowLatency.IsChecked = Settings.LowLatency;
+            UpdateLogFile("Low Latency checkbox was updated. New value: " + Settings.LowLatency);
             RecordMouse.IsChecked = Settings.RecordMouse;
+            UpdateLogFile("Record Mouse checkbox was updated. New value: " + Settings.RecordMouse);
         }
 
         private void UpdateJsonFile()
         {
             string updatedFile = JsonConvert.SerializeObject(Settings);
             File.WriteAllText(jsonPath, updatedFile);
+            UpdateLogFile("AppSettings.json has been updated with the current Json object.");
+        }
+
+        private void UpdateLogFile(string content)
+        {
+            using (StreamWriter sw = File.AppendText(logPath))
+            {
+                sw.WriteLine(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss") + " -- " + content);
+            }
         }
 
         private void WaitTime(int seconds)
@@ -321,11 +366,7 @@ namespace ScreenRecorder
             {
                 System.Windows.Forms.Application.DoEvents();
             }
-        }
-
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
-        {
-
+            UpdateLogFile("App waited " + seconds + "seconds asynchronously.");
         }
     }
 }

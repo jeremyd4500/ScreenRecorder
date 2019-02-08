@@ -30,12 +30,12 @@
                 <Button Name="OpenFolder" Content="Open Folder" Canvas.Left="621" Canvas.Top="8" Width="90" Height="23" Click="BtnOpenFolder_Click"/>
 
                 <Label Content="Recording Location" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
-                <Label Content="Screen Resolution" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
-                <Label Content="Frame Rate" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
-                <Label Content="Bitrate (Mbps)" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
-                <Label Content="Hardware Encoding" Canvas.Top="35" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" Canvas.Left="316"/>
-                <Label Content="Low Latency" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" Canvas.Left="316"/>
-                <Label Content="Record Mouse" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" Canvas.Left="316"/>
+                <Label Content="Screen Resolution" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
+                <Label Content="Framerate (fps)" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
+                <Label Content="Bitrate (Mbps)" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
+                <Label Content="Hardware Encoding" Canvas.Top="35" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0" Canvas.Left="316"/>
+                <Label Content="Low Latency" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0" Canvas.Left="316"/>
+                <Label Content="Record Mouse" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0" Canvas.Left="316"/>
 
                 <ComboBox Name="ScreenResolution" Canvas.Left="116" Canvas.Top="36" Width="100" SelectionChanged="DrpScreenResolution_DataChanged">
                     <ComboBoxItem>1280 x 720</ComboBoxItem>
