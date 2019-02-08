@@ -17,6 +17,7 @@ namespace ScreenRecorder
         private AppSettings Settings { get; set; }
         private Recorder Rec { get; set; } // https://github.com/sskodje/ScreenRecorderLib
         private Stream OutStream { get; set; }
+        private AudioBitrate A_bitrate { get; set; }
 
         private bool isRecording = false;
 
@@ -103,6 +104,21 @@ namespace ScreenRecorder
             }
         }
 
+        private void CbHardwareEncoding_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.HardwareEncoding = HardwareEncoding.IsChecked.Value;
+        }
+
+        private void CbLowLatency_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.LowLatency = LowLatency.IsChecked.Value;
+        }
+
+        private void CbRecordMouse_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.RecordMouse = RecordMouse.IsChecked.Value;
+        }
+
         private void DrpFrameRateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -115,13 +131,12 @@ namespace ScreenRecorder
             }
         }
 
-        private void DrpQualitySelection_DataChanged(object sender, SelectionChangedEventArgs e)
+        private void DrpBitrateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
         {
             
             try
             {
-                Settings.Quality = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-                Settings.Quality = Settings.Quality;
+                Settings.VideoBitrate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
             }
             catch (Exception ex)
             {
@@ -159,7 +174,10 @@ namespace ScreenRecorder
             OpenFolder.IsEnabled = false;
             ScreenResolution.IsEnabled = false;
             FrameRateSelection.IsEnabled = false;
-            QualitySelection.IsEnabled = false;
+            BitrateSelection.IsEnabled = false;
+            HardwareEncoding.IsEnabled = false;
+            LowLatency.IsEnabled = false;
+            RecordMouse.IsEnabled = false;
             StartRecording.IsEnabled = false;
             if (all)
             {
@@ -174,7 +192,10 @@ namespace ScreenRecorder
             OpenFolder.IsEnabled = true;
             ScreenResolution.IsEnabled = true;
             FrameRateSelection.IsEnabled = true;
-            QualitySelection.IsEnabled = true;
+            BitrateSelection.IsEnabled = true;
+            HardwareEncoding.IsEnabled = true;
+            LowLatency.IsEnabled = true;
+            RecordMouse.IsEnabled = true;
             StartRecording.IsEnabled = true;
             StopRecording.IsEnabled = true;
             IdentifyScreens.IsEnabled = true;
@@ -200,23 +221,23 @@ namespace ScreenRecorder
                 //depending on encoder settings and system specifications.
                 IsThrottlingDisabled = false,
                 //Hardware encoding is enabled by default.
-                IsHardwareEncodingEnabled = true,
+                IsHardwareEncodingEnabled = Settings.HardwareEncoding,
                 //Low latency mode provides faster encoding, but can reduce quality.
-                IsLowLatencyEnabled = false,
+                IsLowLatencyEnabled = Settings.LowLatency,
                 //Fast start writes the mp4 header at the beginning of the file, to facilitate streaming.
                 IsMp4FastStartEnabled = false,
                 AudioOptions = new AudioOptions
                 {
-                    Bitrate = AudioBitrate.bitrate_128kbps,
+                    Bitrate = A_bitrate,
                     Channels = AudioChannels.Stereo,
                     IsAudioEnabled = true
                 },
                 VideoOptions = new VideoOptions
                 {
                     BitrateMode = BitrateControlMode.UnconstrainedVBR,
-                    Bitrate = 8000 * 1000,
+                    Bitrate = Settings.VideoBitrate * 1000000,
                     Framerate = Settings.FrameRate,
-                    IsMousePointerEnabled = true,
+                    IsMousePointerEnabled = Settings.RecordMouse,
                     IsFixedFramerate = true,
                     EncoderProfile = H264Profile.Main
                 }
@@ -268,11 +289,11 @@ namespace ScreenRecorder
             }
 
             index = 0;
-            foreach (ComboBoxItem x in QualitySelection.Items)
+            foreach (ComboBoxItem x in BitrateSelection.Items)
             {
-                if (x.Content.ToString() == Settings.Quality.ToString())
+                if (x.Content.ToString() == Settings.VideoBitrate.ToString())
                 {
-                    QualitySelection.SelectedIndex = index;
+                    BitrateSelection.SelectedIndex = index;
                     break;
                 }
                 else
@@ -280,6 +301,10 @@ namespace ScreenRecorder
                     index++;
                 }
             }
+
+            HardwareEncoding.IsChecked = Settings.HardwareEncoding;
+            LowLatency.IsChecked = Settings.LowLatency;
+            RecordMouse.IsChecked = Settings.RecordMouse;
         }
 
         private void UpdateJsonFile()
@@ -296,6 +321,11 @@ namespace ScreenRecorder
             {
                 System.Windows.Forms.Application.DoEvents();
             }
+        }
+
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

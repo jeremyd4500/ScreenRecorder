@@ -16,8 +16,20 @@ namespace ScreenRecorder
         [JsonProperty("FrameRate")]
         public int FrameRate { get; set; }
 
-        [JsonProperty("Quality")]
-        public int Quality { get; set; }
+        [JsonProperty("VideoBitrate")]
+        public int VideoBitrate { get; set; }
+
+        [JsonProperty("HardwareEncoding")]
+        public bool HardwareEncoding { get; set; }
+
+        [JsonProperty("LowLatency")]
+        public bool LowLatency { get; set; }
+
+        [JsonProperty("RecordMouse")]
+        public bool RecordMouse { get; set; }
+
+        [JsonProperty("AudioBitrate")]
+        public int AudioBitrate { get; set; }
     }
 
 }
