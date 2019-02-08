@@ -4,12 +4,12 @@ namespace ScreenRecorder
 {
     public partial class Identify : Window
     {
-        public Identify(int screenNum, int x)
+        public Identify()
         {
             InitializeComponent();
             Top = 0;
-            Left = x;
-            ScreenIdentifierNum.Content = screenNum;
+            Left = 0;
+            ScreenIdentifierNum.Content = 1;
         }
     }
 }

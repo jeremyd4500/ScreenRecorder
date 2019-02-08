@@ -28,8 +28,14 @@ namespace ScreenRecorder
         [JsonProperty("RecordMouse")]
         public bool RecordMouse { get; set; }
 
+        [JsonProperty("EnableAudio")]
+        public bool EnableAudio { get; set; }
+
         [JsonProperty("AudioBitrate")]
         public int AudioBitrate { get; set; }
+
+        [JsonProperty("AudioChannels")]
+        public string AudioChannels { get; set; }
     }
 
 }

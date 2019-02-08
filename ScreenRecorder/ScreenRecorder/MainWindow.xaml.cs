@@ -18,6 +18,7 @@ namespace ScreenRecorder
         private Recorder Rec { get; set; } // https://github.com/sskodje/ScreenRecorderLib
         private Stream OutStream { get; set; }
         private AudioBitrate A_bitrate { get; set; }
+        private AudioChannels A_Channels { get; set; }
 
         private bool isRecording = false;
 
@@ -59,7 +60,7 @@ namespace ScreenRecorder
         {
             UpdateLogFile("Identify button was clicked.");
             DisableFields(true);
-            Identify identifier = new Identify(1, Screen.PrimaryScreen.Bounds.Left);
+            Identify identifier = new Identify();
             identifier.Show();
             UpdateLogFile("Created an Identify object and displayed it.");
             WaitTime(2);
@@ -72,6 +73,12 @@ namespace ScreenRecorder
         {
             Process.Start(RecordingLocation.Text);
             UpdateLogFile("Open Folder button was clicked.");
+        }
+
+        private void BtnOpenLog_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(System.Windows.Forms.Application.StartupPath + "\\" + logPath);
+            UpdateLogFile("Open Log File button was clicked.");
         }
 
         private void BtnRecord_Click(object sender, RoutedEventArgs e)
@@ -121,6 +128,12 @@ namespace ScreenRecorder
             }
         }
 
+        private void CbEnableAudio_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.EnableAudio = EnableAudio.IsChecked.Value;
+            UpdateLogFile("Enable Audio checkbox was clicked. New value: " + Settings.EnableAudio);
+        }
+
         private void CbHardwareEncoding_Click(object sender, RoutedEventArgs e)
         {
             Settings.HardwareEncoding = HardwareEncoding.IsChecked.Value;
@@ -139,17 +152,30 @@ namespace ScreenRecorder
             UpdateLogFile("Record Mouse checkbox was clicked. New value: " + Settings.RecordMouse);
         }
 
-        private void DrpBitrateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
+        private void DrpA_BitrateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+
             try
             {
-                Settings.VideoBitrate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
-                UpdateLogFile("Video Bitrate selection has been changed. New value: " + Settings.VideoBitrate);
+                Settings.AudioBitrate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
+                UpdateLogFile("Audio Bitrate selection has been changed. New value: " + Settings.AudioBitrate);
             }
             catch (Exception ex)
             {
-                UpdateLogFile("Video bitrate selection was changed. Attempted to parse the selected value. Error Message: " + ex.Message);
+                UpdateLogFile("Audio Bitrate selection was changed. Attempted to parse the selected value. Error Message: " + ex.Message);
+            }
+        }
+
+        private void DrpAudioChannels_DataChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                Settings.AudioChannels = (e.AddedItems[0] as ComboBoxItem).Content as string;
+                UpdateLogFile("Audio Channels selection has been changed. New value: " + Settings.AudioChannels);
+            }
+            catch (Exception ex)
+            {
+                UpdateLogFile("Audio Channels selection was changed. Attempted to parse the selected value. Error Message: " + ex.Message);
             }
         }
 
@@ -181,6 +207,20 @@ namespace ScreenRecorder
             }
         }
 
+        private void DrpV_BitrateSelection_DataChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            try
+            {
+                Settings.VideoBitrate = int.Parse((e.AddedItems[0] as ComboBoxItem).Content as string);
+                UpdateLogFile("Video Bitrate selection has been changed. New value: " + Settings.VideoBitrate);
+            }
+            catch (Exception ex)
+            {
+                UpdateLogFile("Video bitrate selection was changed. Attempted to parse the selected value. Error Message: " + ex.Message);
+            }
+        }
+
         // ################################################################################################################
         // ################################################################################################################
         // ################################################################################################################
@@ -197,7 +237,7 @@ namespace ScreenRecorder
             OpenFolder.IsEnabled = false;
             ScreenResolution.IsEnabled = false;
             FrameRateSelection.IsEnabled = false;
-            BitrateSelection.IsEnabled = false;
+            V_BitrateSelection.IsEnabled = false;
             HardwareEncoding.IsEnabled = false;
             LowLatency.IsEnabled = false;
             RecordMouse.IsEnabled = false;
@@ -216,7 +256,7 @@ namespace ScreenRecorder
             OpenFolder.IsEnabled = true;
             ScreenResolution.IsEnabled = true;
             FrameRateSelection.IsEnabled = true;
-            BitrateSelection.IsEnabled = true;
+            V_BitrateSelection.IsEnabled = true;
             HardwareEncoding.IsEnabled = true;
             LowLatency.IsEnabled = true;
             RecordMouse.IsEnabled = true;
@@ -240,6 +280,16 @@ namespace ScreenRecorder
 
         private void Record(string path)
         {
+
+            if (Settings.AudioBitrate == 96) A_bitrate = AudioBitrate.bitrate_96kbps;
+            else if (Settings.AudioBitrate == 128) A_bitrate = AudioBitrate.bitrate_128kbps;
+            else if (Settings.AudioBitrate == 160) A_bitrate = AudioBitrate.bitrate_160kbps;
+            else A_bitrate = AudioBitrate.bitrate_192kbps;
+
+            if (Settings.AudioChannels == "5.1") A_Channels = AudioChannels.FivePointOne;
+            else if (Settings.AudioChannels == "Mono") A_Channels = AudioChannels.Mono;
+            else A_Channels = AudioChannels.Stereo;
+
             UpdateLogFile("Creating recording options.");
             RecorderOptions options = new RecorderOptions
             {
@@ -255,9 +305,9 @@ namespace ScreenRecorder
                 IsMp4FastStartEnabled = false,
                 AudioOptions = new AudioOptions
                 {
-                    Bitrate = AudioBitrate.bitrate_128kbps,
-                    Channels = AudioChannels.Stereo,
-                    IsAudioEnabled = false
+                    Bitrate = A_bitrate,
+                    Channels = A_Channels,
+                    IsAudioEnabled = Settings.EnableAudio
                 },
                 VideoOptions = new VideoOptions
                 {
@@ -321,12 +371,12 @@ namespace ScreenRecorder
             }
 
             index = 0;
-            foreach (ComboBoxItem x in BitrateSelection.Items)
+            foreach (ComboBoxItem x in V_BitrateSelection.Items)
             {
                 if (x.Content.ToString() == Settings.VideoBitrate.ToString())
                 {
                     UpdateLogFile("Bitrate selction was changed. Current selected index: " + index);
-                    BitrateSelection.SelectedIndex = index;
+                    V_BitrateSelection.SelectedIndex = index;
                     break;
                 }
                 else

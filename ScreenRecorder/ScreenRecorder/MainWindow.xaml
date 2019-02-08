@@ -29,7 +29,7 @@
                 <Button Name="SelectFolder" Content="Select Folder" Canvas.Left="526" Canvas.Top="8" Width="90" Height="23" Click="BtnRecordingLocation_Click"/>
                 <Button Name="OpenFolder" Content="Open Folder" Canvas.Left="621" Canvas.Top="8" Width="90" Height="23" Click="BtnOpenFolder_Click"/>
 
-                <Label Content="Recording Location" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0"/>
+                <Label Content="Recording Location" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
                 <Label Content="Screen Resolution" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
                 <Label Content="Framerate (fps)" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
                 <Label Content="Bitrate (Mbps)" Canvas.Top="92" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
@@ -53,12 +53,17 @@
                     <ComboBoxItem>30</ComboBoxItem>
                     <ComboBoxItem>45</ComboBoxItem>
                     <ComboBoxItem IsSelected="True">60</ComboBoxItem>
+                    <ComboBoxItem>70</ComboBoxItem>
                     <ComboBoxItem>80</ComboBoxItem>
+                    <ComboBoxItem>90</ComboBoxItem>
                     <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>110</ComboBoxItem>
+                    <ComboBoxItem>120</ComboBoxItem>
+                    <ComboBoxItem>130</ComboBoxItem>
                     <ComboBoxItem>144</ComboBoxItem>
                 </ComboBox>
 
-                <ComboBox Name="BitrateSelection" Canvas.Left="116" Canvas.Top="92" Width="100" SelectionChanged="DrpBitrateSelection_DataChanged">
+                <ComboBox Name="V_BitrateSelection" Canvas.Left="116" Canvas.Top="92" Width="100" SelectionChanged="DrpV_BitrateSelection_DataChanged">
                     <ComboBoxItem>1</ComboBoxItem>
                     <ComboBoxItem>2</ComboBoxItem>
                     <ComboBoxItem>3</ComboBoxItem>
@@ -83,7 +88,7 @@
                 <CheckBox Name="HardwareEncoding" Canvas.Top="41" Canvas.Left="437" Click="CbHardwareEncoding_Click"/>
                 <CheckBox Name="LowLatency" Canvas.Top="69" Canvas.Left="437" Click="CbLowLatency_Click"/>
                 <CheckBox Name="RecordMouse" Canvas.Top="97" Canvas.Left="437" Click="CbRecordMouse_Click"/>
-                
+
             </Canvas>
 
         </Border>
@@ -94,11 +99,29 @@
         <Border BorderBrush="Black" Canvas.Top="185" Canvas.Left="10" Width="720" Height="225" BorderThickness="1" Background="White">
 
             <Canvas Width="auto" Height="auto">
+                <Label Content="Enable Audio" Canvas.Top="8" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
+                <Label Content="Bitrate (Kbps)" Canvas.Top="36" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
+                <Label Content="Audio Channels" Canvas.Top="64" Height="23" Width="116" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Padding="0,0,5,0"/>
 
+                <CheckBox Name="EnableAudio" Canvas.Top="13" Canvas.Left="115" Click="CbEnableAudio_Click"/>
+
+                <ComboBox Canvas.Left="116" Canvas.Top="36" Width="100" SelectionChanged="DrpA_BitrateSelection_DataChanged" Height="23">
+                    <ComboBoxItem>96</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">128</ComboBoxItem>
+                    <ComboBoxItem>160</ComboBoxItem>
+                    <ComboBoxItem>192</ComboBoxItem>
+                </ComboBox>
+
+                <ComboBox Canvas.Left="116" Canvas.Top="64" Width="100" SelectionChanged="DrpAudioChannels_DataChanged" Height="23">
+                    <ComboBoxItem>5.1</ComboBoxItem>
+                    <ComboBoxItem>Mono</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">Stereo</ComboBoxItem>
+                </ComboBox>
             </Canvas>
 
         </Border>
-
+        
+        <Button Name="OpenLog" Content="Open Log File" Canvas.Left="10" Canvas.Bottom="10" Width="110" Click="BtnOpenLog_Click" Background="White"/>
         <Button Name="StartRecording" Content="Start Recording" Canvas.Right="130" Canvas.Bottom="10" Width="110" Click="BtnRecord_Click" Background="White"/>
         <Button Name="StopRecording" Content="Stop Recording" Canvas.Right="10" Canvas.Bottom="10" Width="110" Click="BtnStop_Click" Background="White"/>
 
